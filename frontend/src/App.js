@@ -1,50 +1,71 @@
-import React, { useState } from 'react';
-import { getAccessToken, getCompanyInfo, getEmployeeDirectory, getEmployeeDetails } from './services/api';
-
-// Import MUI components
-import { Button, MenuItem, Select, FormControl, InputLabel, Typography, Box, CircularProgress } from '@mui/material';
+import React, { useState } from "react";
+import axios from 'axios';
+import { getAccessToken, getCompanyInfo, getEmployeeDirectory } from "./services/api";
+import { Button, MenuItem, Select, FormControl, InputLabel, Typography, Box, CircularProgress } from "@mui/material";
+import CompanyInfoCard from "./CompanyInfoCard/CompanyInfoCard";
+import EmployeeDirectory from "./EmployeeDirectory/EmployeeDirectory";
+import Employee from './Employee/Employee';
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
   const [employeeDirectory, setEmployeeDirectory] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [employeeDetails, setEmployeeDetails] = useState(null);
-  const [provider, setProvider] = useState('');  // Store selected provider
+  const [employeeDetails, setEmployeeDetails] = useState(null);  // Store employee details
+  const [employeeEmployment, setEmployeeEmployment] = useState(null);
+  const [provider, setProvider] = useState("");  // Store selected provider
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);  // Add loading state
 
   // List of providers for the dropdown
   const providers = [
-    { id: 'gusto', name: 'Gusto' },
-    { id: 'bamboohr', name: 'BambooHR' },
-    { id: 'justworks', name: 'Justworks' },
-    { id: 'paychex_flex', name: 'Paychex Flex' },
-    { id: 'workday', name: 'Workday' },
+    { id: "gusto", name: "Gusto" },
+    { id: "bamboohr", name: "BambooHR" },
+    { id: "justworks", name: "Justworks" },
+    { id: "paychex_flex", name: "Paychex Flex" },
+    { id: "workday", name: "Workday" },
   ];
 
   // Function to get access token
   const handleGetAccessToken = async () => {
     if (!provider) {
-      setError('Please select a provider');
+      setError("Please select a provider");
       return;
     }
 
-    setLoading(true);  // Set loading to true when fetching starts
-    setError(null);  // Clear any previous error
+    // Set loading to true when fetching starts
+    setLoading(true);
+    
+    // Clear any previous error
+    setError(null);
 
     try {
-      const token = await getAccessToken(provider);  // Fetch access token for selected provider
+      // Log provider
+      console.log("Fetching access token for provider:", provider);
+      
+      // Fetch access token for selected provider
+      const token = await getAccessToken(provider);
+      
+      // Store access token
       setAccessToken(token);
+      
+      // Log access token
+      console.log("Access Token:", token);
 
       // Fetch company info after getting the token
       const company = await getCompanyInfo(token);
+      
+      // Store company info
       setCompanyInfo(company);
+      
+      // Log company info
+      console.log("Company Info:", company);
     } catch (err) {
-      setError('Error fetching access token or company info');
-      console.error(err);
+      // Handle error while fetching access token or company info
+      setError("Error fetching access token or company info");
+      console.error("Error in handleGetAccessToken:", err);
     } finally {
-      setLoading(false);  // Set loading to false after fetching completes
+      // Set loading to false after fetching completes
+      setLoading(false);
     }
   };
 
@@ -52,41 +73,92 @@ function App() {
   const handleGetEmployeeDirectory = async () => {
     if (!accessToken) return;
 
-    setLoading(true);  // Show loading spinner during fetch
+    // Set loading to true when fetching starts
+    setLoading(true);
+
     try {
+      // Log when fetching starts
+      console.log('Fetching employee directory...');
+      
+      // Fetch employee directory
       const directory = await getEmployeeDirectory(accessToken);
-      setEmployeeDirectory(directory);
+      
+      // Store the employee directory
+      setEmployeeDirectory(directory.individuals);
+      
+      // Log employee directory
+      console.log('Employee Directory:', directory.individuals);
     } catch (err) {
+      // Handle error while fetching employee directory
       setError('Error fetching employee directory');
-      console.error(err);
+      console.error('Error in handleGetEmployeeDirectory:', err);
     } finally {
-      setLoading(false);  // Hide spinner when done
+      // Set loading to false after fetching completes
+      setLoading(false);
     }
   };
 
-  // Fetch individual employee details
-  const handleEmployeeSelect = async (employeeId) => {
+  // Fetch employee details and employment data
+  const handleEmployeeClick = async (employeeId) => {
     if (!accessToken) return;
 
-    setLoading(true);  // Show loading spinner during fetch
+    // Set loading to true when fetching starts
+    setLoading(true);
+
     try {
-      const details = await getEmployeeDetails(accessToken, employeeId);
-      setSelectedEmployee(employeeId);
-      setEmployeeDetails(details);
+      // Log employee ID
+      console.log('Fetching employee details for ID:', employeeId);
+      
+      // Post request to fetch employee details
+      const details = await axios.post('http://localhost:3000/getEmployeeDetails', {
+        employeeId  // Send the employeeId in the body
+      });
+      
+      // Log response
+      console.log('Employee Details Response:', details);
+      
+      // Store the fetched employee details
+      setEmployeeDetails(details.data);
     } catch (err) {
-      setError('Error fetching employee details');
-      console.error(err);
+      // Handle error while fetching employee details
+      console.error('Error fetching employee details:', err.response ? err.response.data : err.message);
     } finally {
-      setLoading(false);  // Hide spinner when done
+      // Set loading to false after fetching completes
+      setLoading(false);
+    }
+
+    // Fetch employment data
+    try {
+      // Log employee ID
+      console.log('Fetching employee employment for ID:', employeeId);
+      
+      // Post request to fetch employee employment
+      const employments = await axios.post('http://localhost:3000/getEmployeeEmployment', {
+        employeeId  // Send the employeeId in the body
+      });
+      
+      // Log employment response
+      console.log("Employment Data Response:", employments);
+      
+      // Store the fetched employment data
+      setEmployeeEmployment(employments.data);
+    } catch (err) {
+      // Handle error while fetching employee employment data
+      console.error('Error fetching employee employment:', err.response ? err.response.data : err.message);
+    } finally {
+      // Set loading to false after fetching completes
+      setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>Finch API Integration</Typography>
+    <Box sx={{ padding: "20px" }}>
+      <Typography variant="h4" gutterBottom>
+        Finch API Integration
+      </Typography>
 
       {/* Dropdown to select a provider */}
-      <FormControl fullWidth variant="outlined" sx={{ marginBottom: '20px' }}>
+      <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
         <InputLabel id="provider-label">Select Provider</InputLabel>
         <Select
           labelId="provider-label"
@@ -94,7 +166,9 @@ function App() {
           onChange={(e) => setProvider(e.target.value)}
           label="Select Provider"
         >
-          <MenuItem value=""><em>None</em></MenuItem>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
           {providers.map((prov) => (
             <MenuItem key={prov.id} value={prov.id}>
               {prov.name}
@@ -109,64 +183,37 @@ function App() {
         color="primary"
         onClick={handleGetAccessToken}
         disabled={!provider || loading}  // Disable button while loading
-        sx={{ marginBottom: '20px' }}
+        sx={{ marginBottom: "20px" }}
       >
-        Get Access Token for {provider || 'selected provider'}
+        Get Access Token for {provider || "selected provider"}
       </Button>
 
       {/* Show loading spinner while data is being fetched */}
-      {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
-
-      {companyInfo && (
-        <Box sx={{ marginBottom: '20px' }}>
-          <Typography variant="h6">Company Info</Typography>
-          <Typography>Company Name: {companyInfo.name}</Typography>
-          <Typography>Company ID: {companyInfo.id}</Typography>
-        </Box>
+      {loading && (
+        <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
       )}
 
-      {/* Button to fetch employee directory */}
+      {/* Render Company Info Card when companyInfo is available */}
+      {companyInfo && <CompanyInfoCard companyInfo={companyInfo} />}
+
+      {/* Button to get employee directory */}
       <Button
         variant="contained"
         color="secondary"
         onClick={handleGetEmployeeDirectory}
-        disabled={!accessToken || loading}  // Disable button while loading
+        disabled={!accessToken || loading}
         sx={{ marginBottom: '20px' }}
       >
         Get Employee Directory
       </Button>
 
-      {error && <Typography color="error">{error}</Typography>}
-
-      {/* Display Employee Directory */}
+      {/* Render Employee Directory */}
       {employeeDirectory.length > 0 && (
-        <Box>
-          <Typography variant="h6" gutterBottom>Employee Directory</Typography>
-          {employeeDirectory.map(employee => (
-            <Box key={employee.id} sx={{ marginBottom: '10px' }}>
-              <Typography>{employee.first_name} {employee.last_name}</Typography>
-              <Button
-                variant="outlined"
-                onClick={() => handleEmployeeSelect(employee.id)}
-                disabled={loading}  // Disable button while loading
-              >
-                View Details
-              </Button>
-            </Box>
-          ))}
-        </Box>
+        <EmployeeDirectory employees={employeeDirectory} onEmployeeClick={handleEmployeeClick} />
       )}
 
-      {/* Display Selected Employee's Details */}
-      {employeeDetails && (
-        <Box>
-          <Typography variant="h6">Employee Details</Typography>
-          <Typography>Name: {employeeDetails.first_name} {employeeDetails.last_name}</Typography>
-          <Typography>Email: {employeeDetails.email}</Typography>
-          <Typography>Title: {employeeDetails.title}</Typography>
-          <Typography>Employment Status: {employeeDetails.employment.status}</Typography>
-        </Box>
-      )}
+      {/* Display Employee Details & Employment Card */}
+      {employeeDetails && employeeEmployment && <Employee employee={employeeDetails} employment={employeeEmployment} />}
     </Box>
   );
 }
