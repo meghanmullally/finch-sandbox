@@ -1,4 +1,4 @@
-require('dotenv').config();  // Ensure dotenv is loaded
+require('dotenv').config();
 
 const express = require('express');
 const axios = require('axios');
@@ -34,13 +34,13 @@ app.post('/getAccessToken', async (req, res) => {
 
         // Finch API request to get access token
         const response = await axios.post(`${process.env.FINCH_API_URL}/sandbox/connections`, {
-            provider_id: providerId,  // Use 'provider_id' for the provider
+            provider_id: providerId,
             products: products,
             employee_size: employeeSize
         }, {
             auth: {
-                username: process.env.CLIENT_ID,  // Finch client_id from .env
-                password: process.env.CLIENT_SECRET  // Finch client_secret from .env
+                username: process.env.CLIENT_ID,
+                password: process.env.CLIENT_SECRET
             },
             headers: {
                 'Content-Type': 'application/json'
@@ -49,6 +49,8 @@ app.post('/getAccessToken', async (req, res) => {
 
         // Save access token to memory
         accessToken = response.data.access_token;
+
+        console.log('Access Token received:', accessToken);
 
         // Return the access token to the client (frontend)
         res.json({ access_token: accessToken });
@@ -69,12 +71,10 @@ app.post('/getAccessToken', async (req, res) => {
 // GET route to fetch company information
 app.get('/getCompanyInfo', async (req, res) => {
     try {
-        // Ensure accessToken is available
         if (!accessToken) {
             return res.status(401).json({ error: 'Unauthorized: Access token is missing' });
         }
 
-        // Finch API request to get company info
         const response = await axios.get(`${process.env.FINCH_API_URL}/employer/company`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -82,6 +82,8 @@ app.get('/getCompanyInfo', async (req, res) => {
                 'Finch-API-Version': '2020-09-17'
             }
         });
+
+        console.log('Company Info response:', response.data);
 
         // Return company info to the client
         res.json(response.data);
@@ -102,12 +104,10 @@ app.get('/getCompanyInfo', async (req, res) => {
 // GET route to fetch employee directory
 app.get('/getEmployeeDirectory', async (req, res) => {
     try {
-        // Ensure accessToken is available
         if (!accessToken) {
             return res.status(401).json({ error: 'Unauthorized: Access token is missing' });
         }
 
-        // Finch API request to get employee directory
         const response = await axios.get(`${process.env.FINCH_API_URL}/employer/directory`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -115,6 +115,8 @@ app.get('/getEmployeeDirectory', async (req, res) => {
                 'Finch-API-Version': '2020-09-17'
             }
         });
+
+        console.log('Employee Directory response:', response.data);
 
         // Return employee directory to the client
         res.json(response.data);
@@ -132,18 +134,19 @@ app.get('/getEmployeeDirectory', async (req, res) => {
     }
 });
 
-// GET route to fetch individual employee details
-app.get('/getEmployeeDetails/:employeeId', async (req, res) => {
-    const { employeeId } = req.params;
+app.post('/getEmployeeDetails', async (req, res) => {
+    // Extract the employeeId from the request body
+    const { employeeId } = req.body;
 
     try {
-        // Ensure accessToken is available
         if (!accessToken) {
             return res.status(401).json({ error: 'Unauthorized: Access token is missing' });
         }
 
-        // Finch API request to get employee details
-        const response = await axios.get(`${process.env.FINCH_API_URL}/employer/individual/${employeeId}`, {
+        // Send a POST request to Finch's /individual API
+        const response = await axios.post(`${process.env.FINCH_API_URL}/employer/individual`, {
+            requests: [{ individual_id: employeeId }]
+        }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
@@ -151,18 +154,48 @@ app.get('/getEmployeeDetails/:employeeId', async (req, res) => {
             }
         });
 
-        // Return employee details to the client
-        res.json(response.data);
+        // Return the first response body
+        res.json(response.data.responses[0].body);
     } catch (error) {
         console.error('Error fetching employee details:', error.message);
-        if (error.response) {
-            console.error('Response data:', error.response.data);
-            console.error('Response status:', error.response.status);
-        }
         res.status(500).json({
             message: 'Failed to fetch employee details',
             error: error.message,
             details: error.response ? error.response.data : 'No additional details'
+        });
+    }
+});
+
+
+app.post('/getEmployeeEmployment', async (req, res) => {
+    // Extract the employeeId from the request body
+    const { employeeId } = req.body;
+
+    try {
+        if (!accessToken) {
+            return res.status(401).json({ error: 'Unauthorized: Access token is missing' });
+        }
+
+        // Send a POST request to Finch's /employment API
+        const response = await axios.post(`${process.env.FINCH_API_URL}/employer/employment`, {
+            // Finch expects this in the body
+            requests: [{ individual_id: employeeId }]
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+                'Finch-API-Version': '2020-09-17'
+            }
+        });
+
+        // Return the first response body
+        res.json(response.data.responses[0].body);
+    } catch (error) {
+        console.error('Error fetching employee employment details:', error.message);
+        res.status(500).json({
+            message: 'Failed to fetch employee employment details',
+            error: error.message,
+            details: error.response ? error.response.data : 'No additional employment details'
         });
     }
 });
