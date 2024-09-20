@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { getAccessToken, getCompanyInfo, getEmployeeDirectory } from "./services/api";
-import { Button, MenuItem, Select, FormControl, InputLabel, Typography, Box, CircularProgress } from "@mui/material";
+import { Button, MenuItem, Select, FormControl, InputLabel, Typography, Box, CircularProgress, Alert } from "@mui/material";
 import CompanyInfoCard from "./CompanyInfoCard/CompanyInfoCard";
 import EmployeeDirectory from "./EmployeeDirectory/EmployeeDirectory";
 import Employee from './Employee/Employee';
@@ -19,10 +19,10 @@ function App() {
   // List of providers for the dropdown
   const providers = [
     { id: "gusto", name: "Gusto" },
-    { id: "bamboohr", name: "BambooHR" },
-    { id: "justworks", name: "Justworks" },
     { id: "paychex_flex", name: "Paychex Flex" },
     { id: "workday", name: "Workday" },
+    // kept in to show example of custom error message
+    {id: "justworks", name: "JustWorks"}
   ];
 
   // Function to get access token
@@ -41,27 +41,47 @@ function App() {
     try {
       // Log provider
       console.log("Fetching access token for provider:", provider);
-      
+  
       // Fetch access token for selected provider
       const token = await getAccessToken(provider);
-      
+  
       // Store access token
       setAccessToken(token);
-      
+  
       // Log access token
       console.log("Access Token:", token);
-
+  
       // Fetch company info after getting the token
       const company = await getCompanyInfo(token);
-      
+  
       // Store company info
       setCompanyInfo(company);
-      
+  
       // Log company info
       console.log("Company Info:", company);
     } catch (err) {
-      // Handle error while fetching access token or company info
-      setError("Error fetching access token or company info");
+      // Handle error with detailed status code and message
+      let errorMessage = "Error fetching access token or company info";
+      if (err.response) {
+        // Check the status code and customize the message
+        switch (err.response.status) {
+          case 400:
+            errorMessage = `Bad request: The provider ${provider} may not support this authentication method.`;
+            break;
+          case 401:
+            errorMessage = "Unauthorized: Please check your credentials.";
+            break;
+          case 404:
+            errorMessage = "Not found: The requested resource is not available.";
+            break;
+          case 500:
+            errorMessage = "Server error: The server encountered an internal error. Please try again later.";
+            break;
+          default:
+            errorMessage = `Unexpected error: ${err.response.status}`;
+        }
+      }
+      setError(errorMessage);
       console.error("Error in handleGetAccessToken:", err);
     } finally {
       // Set loading to false after fetching completes
@@ -89,8 +109,21 @@ function App() {
       // Log employee directory
       console.log('Employee Directory:', directory.individuals);
     } catch (err) {
-      // Handle error while fetching employee directory
-      setError('Error fetching employee directory');
+      // Handle error with detailed status code
+      let errorMessage = "Error fetching employee directory";
+      if (err.response) {
+        switch (err.response.status) {
+          case 400:
+            errorMessage = "Bad request: There was an issue with your request.";
+            break;
+          case 500:
+            errorMessage = "Server error: The server encountered an error. Please try again later.";
+            break;
+          default:
+            errorMessage = `Unexpected error: ${err.response.status}`;
+        }
+      }
+      setError(errorMessage);
       console.error('Error in handleGetEmployeeDirectory:', err);
     } finally {
       // Set loading to false after fetching completes
@@ -120,8 +153,22 @@ function App() {
       // Store the fetched employee details
       setEmployeeDetails(details.data);
     } catch (err) {
-      // Handle error while fetching employee details
-      console.error('Error fetching employee details:', err.response ? err.response.data : err.message);
+      // Handle error with status code
+      let errorMessage = "Error fetching employee details";
+      if (err.response) {
+        switch (err.response.status) {
+          case 400:
+            errorMessage = "Bad request: Invalid employee ID.";
+            break;
+          case 500:
+            errorMessage = "Server error: Unable to fetch employee details. Please try again later.";
+            break;
+          default:
+            errorMessage = `Unexpected error: ${err.response.status}`;
+        }
+      }
+      setError(errorMessage);
+      console.error('Error fetching employee details:', err);
     } finally {
       // Set loading to false after fetching completes
       setLoading(false);
@@ -143,8 +190,19 @@ function App() {
       // Store the fetched employment data
       setEmployeeEmployment(employments.data);
     } catch (err) {
-      // Handle error while fetching employee employment data
-      console.error('Error fetching employee employment:', err.response ? err.response.data : err.message);
+      // Handle error with status code
+      let errorMessage = "Error fetching employee employment data";
+      if (err.response) {
+        switch (err.response.status) {
+          case 500:
+            errorMessage = "Server error: Unable to fetch employment data. Please try again later.";
+            break;
+          default:
+            errorMessage = `Unexpected error: ${err.response.status}`;
+        }
+      }
+      setError(errorMessage);
+      console.error('Error fetching employee employment:', err);
     } finally {
       // Set loading to false after fetching completes
       setLoading(false);
@@ -156,6 +214,9 @@ function App() {
       <Typography variant="h4" gutterBottom>
         Finch API Integration
       </Typography>
+
+      {/* Display error message */}
+      {error && <Alert severity="error" sx={{ marginBottom: "20px" }}>{error}</Alert>}
 
       {/* Dropdown to select a provider */}
       <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
@@ -183,7 +244,7 @@ function App() {
         color="primary"
         onClick={handleGetAccessToken}
         disabled={!provider || loading}  // Disable button while loading
-        sx={{ marginBottom: "20px" }}
+        sx={{ margin: "12px" }}
       >
         Get Access Token for {provider || "selected provider"}
       </Button>
@@ -202,7 +263,7 @@ function App() {
         color="secondary"
         onClick={handleGetEmployeeDirectory}
         disabled={!accessToken || loading}
-        sx={{ marginBottom: '20px' }}
+        sx={{ margin: '12px' }}
       >
         Get Employee Directory
       </Button>
