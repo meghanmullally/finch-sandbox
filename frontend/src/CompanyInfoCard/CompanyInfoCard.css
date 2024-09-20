@@ -1,15 +1,40 @@
-/* Add margin and padding to the card */
 .company-card {
     margin-top: 20px;
     padding: 20px;
-  }
-  
-  /* Add margin to the location section */
-  .company-location {
-    margin-top: 10px;
-  }
-  
-  /* Add margin to the departments section */
-  .company-departments {
-    margin-top: 10px;
-  }
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    height: 100%;
+    width: auto
+}
+
+/* Title for the company info section */
+.company-info-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+/* Subtitle for sections like Location, Departments */
+.company-subtitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Fields within the company info */
+.company-field {
+    font-size: 16px;
+    margin: 6px 0;
+}
+
+/* Styling for the list of departments */
+.department-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.department-list li {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
