@@ -1,29 +1,46 @@
-/* Box container styling */
 .employee-container {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  /* Section margin */
-  .section {
-    margin-bottom: 20px;
-  }
-  
-  /* Typography styles for section titles */
-  .section-title {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-  
-  /* Divider style for the top job title */
-  .job-title-divider {
-    margin-bottom: 10px;
-  }
-  
-  /* Custom Fields styling */
-  .custom-field {
-    font-weight: bold;
-  }
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.custom-field {
+  font-style: italic;
+  color: #555;
+}
+
+.job-title-divider {
+  margin: 10px 0;
+}
+
+p {
+  margin: 5px 0;
+}
+
+/* Adjust padding for nested sections */
+.employee-info-section {
+  padding-left: 20px;
+}
+
+h5, h6 {
+  margin: 0;
+  padding: 5px 0;
+}
+
+/* Styling for divider */
+.job-title-divider {
+  border-top: 1px solid #ddd;
+  margin: 10px 0;
+}

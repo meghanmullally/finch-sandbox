@@ -1,72 +1,89 @@
 import React from 'react';
-import { Box, Typography, Divider } from '@mui/material';
-import './employee.css';  // Import the CSS file
+import { Box, Divider } from '@mui/material';
+import './employee.css';
 
 const Employee = ({ employee, employment }) => {
     return (
         <Box className="employee-container">
             {/* Job Info */}
-            <Typography variant="h5" gutterBottom>Job Title: {employment.title}</Typography>
+            <h2>Employee Profile: {employee.first_name} {employee.last_name}</h2>
             <Divider className="job-title-divider" />
 
             <Box className="section">
                 {/* Personal Info Section */}
-                <Typography className="section-title">Personal Info</Typography>
-                <Typography><strong>First Name:</strong> {employee.first_name}</Typography>
-                {employee.middle_name && <Typography><strong>Middle Name:</strong> {employee.middle_name}</Typography>}
-                <Typography><strong>Last Name:</strong> {employee.last_name}</Typography>
-                <Typography><strong>Date of Birth:</strong> {employee.dob}</Typography>
-                <Typography><strong>Emails:</strong></Typography>
-                {employee.emails.map((email, index) => (
-                    <Typography key={index}>&bull; {email.data} ({email.type})</Typography>
-                ))}
-                <Typography><strong>Phone Numbers:</strong></Typography>
-                {employee.phone_numbers.map((phone, index) => (
-                    <Typography key={index}>&bull; {phone.data} ({phone.type})</Typography>
-                ))}
-                <Typography><strong>Address:</strong></Typography>
-                <Typography>
-                    {employee.residence.line1}, {employee.residence.line2},
-                    {employee.residence.city}, {employee.residence.state},
-                    {employee.residence.postal_code}, {employee.residence.country}
-                </Typography>
+                <h6 className="section-title">Personal Info</h6>
+                <p><strong>First Name:</strong> {employee.first_name}</p>
+                {employee.middle_name && <p><strong>Middle Name:</strong> {employee.middle_name}</p>}
+                <p><strong>Last Name:</strong> {employee.last_name}</p>
+                <p><strong>Date of Birth:</strong> {employee.dob}</p>
+                <p><strong>Emails:</strong></p>
+                {employee.emails?.length > 0 ? (
+                    employee.emails.map((email, index) => (
+                        <p key={index}>&bull; {email.data} ({email.type})</p>
+                        ))
+                        ) : (
+                            <p>No emails available</p>
+                            )}
+                <p><strong>Phone Numbers:</strong></p>
+                {employee.phone_numbers?.length > 0 ? (
+                    employee.phone_numbers.map((phone, index) => (
+                        <p key={index}>&bull; {phone.data} ({phone.type})</p>
+                        ))
+                        ) : (
+                            <p>No phone numbers available</p>
+                            )}
+                <p><strong>Address:</strong></p>
+                {employee.residence ? (
+                    <p>
+                        {employee.residence.line1}, {employee.residence.line2},
+                        {employee.residence.city}, {employee.residence.state},
+                        {employee.residence.postal_code}, {employee.residence.country}
+                    </p>
+                ) : (
+                    <p>No address available</p>
+                    )}
             </Box>
 
             {/* Employment Info */}
             <Box className="section">
-                <Typography className="section-title">Employment Info</Typography>
-                <Typography><strong>Start Date:</strong> {employment.start_date}</Typography>
-                <Typography><strong>End Date:</strong> {employment.end_date || 'Currently Employed'}</Typography>
-                <Typography><strong>Employment Type:</strong> {employment.employment.type}</Typography>
-                <Typography><strong>Employment Subtype:</strong> {employment.employment.subtype}</Typography>
+                <h6 className="section-title">Employment Info</h6>
+                <p><strong>Job Title:</strong> {employment.title}</p>
+                <p><strong>Start Date:</strong> {employment.start_date}</p>
+                <p><strong>End Date:</strong> {employment.end_date || 'YYYY-MM-DD'}</p>
+                <p><strong>Employment Type:</strong> {employment.employment?.type || 'Not available'}</p>
+                <p><strong>Employment Subtype:</strong> {employment.employment?.subtype || 'Not available'}</p>
 
-                <Typography><strong>Manager Info:</strong></Typography>
+                <p><strong>Manager Info:</strong></p>
                 {employment.manager ? (
-                    <Typography>Manager ID: {employment.manager.id}</Typography>
+                    <p>Manager ID: {employment.manager.id}</p>
                 ) : (
-                    <Typography>No manager assigned</Typography>
+                    <p>No manager assigned</p>
                 )}
             </Box>
 
             {/* Income Info */}
             <Box className="section">
-                <Typography className="section-title">Income History</Typography>
-                <Typography><strong>Latest Income:</strong> {employment.income.amount} {employment.income.currency} ({employment.income.unit})</Typography>
-                <Typography><strong>Income History:</strong></Typography>
-                {employment.income_history.map((income, index) => (
-                    <Typography key={index}>&bull; {income.amount} {income.currency} (effective date: {income.effective_date})</Typography>
-                ))}
+                <h6 className="section-title">Income History</h6>
+                <p><strong>Latest Income:</strong> {employment.income?.amount || 'N/A'} {employment.income?.currency || ''} ({employment.income?.unit || ''})</p>
+                <p><strong>Income History:</strong></p>
+                {employment.income_history?.length > 0 ? (
+                    employment.income_history.map((income, index) => (
+                        <p key={index}>&bull; {income.amount} {income.currency} (effective date: {income.effective_date})</p>
+                    ))
+                ) : (
+                    <p>No income history available</p>
+                )}
             </Box>
 
             {/* Custom Fields */}
             <Box className="section">
-                <Typography className="section-title">Custom Fields</Typography>
-                {employment.custom_fields.length > 0 ? (
+                <h6 className="section-title">Custom Fields</h6>
+                {employment.custom_fields?.length > 0 ? (
                     employment.custom_fields.map((field, index) => (
-                        <Typography key={index} className="custom-field">{field.name}: {field.value.toString()}</Typography>
+                        <p key={index} className="custom-field">{field.name}: {field.value.toString()}</p>
                     ))
                 ) : (
-                    <Typography>No custom fields</Typography>
+                    <p>No custom fields available</p>
                 )}
             </Box>
         </Box>
