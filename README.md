@@ -15,13 +15,13 @@
 
 ## **Project Description**
 
-This project is a web application that integrates with Finch's Sandbox API to retrieve company and employee data from various payroll providers. The application allows users to select a payroll provider (Gusto, Paychex Flex, and Workday ), fetch access tokens, retrieve company information, view an employee directory, and access individual employee details. It is designed to provide clear error feedback and fallback messages for missing or incomplete data.
+This project is a web application that integrates with Finch's Sandbox API to retrieve company and employee data from various providers. The application allows users to select a provider (Gusto, Paychex Flex, and Workday ), fetch access tokens, retrieve company information, view an employee directory, and access individual employee details. It is designed to provide clear error feedback and fallback messages for missing or incomplete data.
 
 ---
 
 ## **Features**
 
-- **Provider Selection:** Choose from four payroll providers (Gusto, Paychex Flex, and Workday ).
+- **Provider Selection:** Choose from four providers (Gusto, Paychex Flex, and Workday ).
 - **Access Token Retrieval:** Fetch an access token for the selected provider.
 - **Company Info:** View company information such as legal name, phone number, and location.
 - **Employee Directory:** Retrieve a list of employees with department, status, and reporting details.
