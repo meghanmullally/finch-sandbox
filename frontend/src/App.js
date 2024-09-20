@@ -22,8 +22,6 @@ function App() {
     { id: "gusto", name: "Gusto" },
     { id: "paychex_flex", name: "Paychex Flex" },
     { id: "workday", name: "Workday" },
-    // kept in to show example of custom error message
-    { id: "justworks", name: "JustWorks" },
   ];
 
   // Function to get access token
@@ -134,6 +132,32 @@ function App() {
     }
   };
 
+// attempt to fetch restricted endpoint
+  const handleRestrictedEndpoint = async () => {
+    if (!accessToken) return;
+
+    // Set loading to true
+    setLoading(true);
+    setError(null)
+
+    try {
+      // Attempt to access the /payment endpoint
+      const response = await axios.get('http://localhost:3000/payment', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Finch-API-Version': '2020-09-17',
+          'Content-Type': 'application/json',
+        }
+      });
+    } catch (err) {
+      // Handle the error and display a custom error message
+      setError("Access denied: This endpoint is restricted.");
+      console.error("Error accessing restricted endpoint:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box sx={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
@@ -178,13 +202,15 @@ function App() {
         Get Access Token for {provider || "selected provider"}
       </Button>
 
-      {/* Show loading spinner while data is being fetched */}
-      {loading && (
-        <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
-      )}
-
-      {/* Render Company Info Card when companyInfo is available */}
-      {companyInfo && <CompanyInfoCard companyInfo={companyInfo} />}
+      {/* Button to fetch Restricted Endpoint: payment */}
+      <Button
+        variant="contained"
+        color="error"
+        onClick={handleRestrictedEndpoint}
+        disabled={!accessToken || loading}  // Disable if there's no access token
+      >
+        Try Restricted Endpoint (/payment)
+      </Button>
 
       {/* Button to get employee directory */}
       <Button
@@ -196,6 +222,14 @@ function App() {
       >
         Get Employee Directory
       </Button>
+
+      {/* Show loading spinner while data is being fetched */}
+      {loading && (
+        <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
+      )}
+
+      {/* Render Company Info Card when companyInfo is available */}
+      {companyInfo && <CompanyInfoCard companyInfo={companyInfo} />}
 
       {/* Render Employee Directory */}
       {employeeDirectory.length > 0 && (
