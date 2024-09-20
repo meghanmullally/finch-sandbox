@@ -1,6 +1,7 @@
 import React from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Button } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import './employeeDirectory.css'; 
 
 const EmployeeDirectory = ({ employees, onEmployeeClick }) => {
     // Log the employees to verify the data
@@ -8,24 +9,32 @@ const EmployeeDirectory = ({ employees, onEmployeeClick }) => {
     console.log('Employees:', employees);
 
     return (
-        <div>
+        <div className="employee-directory">
             {employees.map((employee) => (
-                <Accordion key={employee.id}>
+                <Accordion key={employee.id} className="employee-accordion">
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography>{employee.first_name} {employee.last_name}</Typography>
+                        <h4 className="employee-name">{employee.first_name} {employee.last_name}</h4>
                     </AccordionSummary>
+                    <hr/>
                     <AccordionDetails>
-                        <Typography>Department: {employee.department.name}</Typography>
-                        <Typography>Status: {employee.is_active ? 'Active' : 'Inactive'}</Typography>
+                        <p>
+                            {employee.department ? (
+                                <span>Department: {employee.department.name}</span>
+                            ) : (
+                                <span>No Department Assigned</span>
+                            )}
+                        </p>
+                        
+                        <p>Status: {employee.is_active ? 'Active' : 'Inactive'}</p>
 
                         {/* Display manager information if available */}
-                        {employee.manager ? (
-                            <Typography>
-                                Reports To: {employee.manager.first_name} {employee.manager.last_name}
-                            </Typography>
-                        ) : (
-                            <Typography>Reports To: No manager assigned</Typography>
-                        )}
+                        <p>
+                            {employee.manager ? (
+                                <span>Reports To ID: {employee.manager.id}</span>
+                            ) : (
+                                <span>Reports To: No manager assigned</span>
+                            )}
+                        </p>
 
                         <Button
                             variant="contained"

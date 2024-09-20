@@ -1,0 +1,35 @@
+.employee-directory {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.employee-info-section {
+    margin-bottom: 10px;
+}
+
+.employee-info-section p {
+    margin: 5px 0;
+}
+
+/* Accordion for each employee */
+.employee-accordion {
+    margin-bottom: 10px;
+}
+
+/* Employee name styling */
+.employee-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* General paragraph styling for details */
+.employee-accordion p {
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+/* Button styling can be further customized if needed */
+.employee-accordion button {
+    margin-top: 10px;
+}
