@@ -132,7 +132,7 @@ function App() {
     }
   };
 
-// attempt to fetch restricted endpoint
+  // attempt to fetch restricted endpoint
   const handleRestrictedEndpoint = async () => {
     if (!accessToken) return;
 
@@ -143,6 +143,32 @@ function App() {
     try {
       // Attempt to access the /payment endpoint
       const response = await axios.get('http://localhost:3000/payment', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Finch-API-Version': '2020-09-17',
+          'Content-Type': 'application/json',
+        }
+      });
+    } catch (err) {
+      // Handle the error and display a custom error message
+      setError("Access denied: This endpoint is restricted. Please contact the provider for further assistance.");
+      console.error("Error accessing restricted endpoint:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // attempt to fetch restricted endpoint: /pay-statement
+  const handlePayStatementEndpoint = async () => {
+    if (!accessToken) return;
+
+    // Set loading to true
+    setLoading(true);
+    setError(null)
+
+    try {
+      // Attempt to access the /pay-statement endpoint
+      const response = await axios.get('http://localhost:3000/pay-statement', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Finch-API-Version': '2020-09-17',
@@ -208,8 +234,19 @@ function App() {
         color="error"
         onClick={handleRestrictedEndpoint}
         disabled={!accessToken || loading}  // Disable if there's no access token
+        sx={{ margin: "12px" }}
       >
         Try Restricted Endpoint (/payment)
+      </Button>
+
+      <Button
+        variant="contained"
+        color="error"
+        onClick={handlePayStatementEndpoint}
+        disabled={!accessToken || loading}  // Disable if there's no access token
+        sx={{ margin: "12px" }}
+      >
+        Try Restricted Endpoint (/pay-statement)
       </Button>
 
       {/* Button to get employee directory */}
