@@ -20,18 +20,18 @@ const Employee = ({ employee, employment }) => {
                 {employee.emails?.length > 0 ? (
                     employee.emails.map((email, index) => (
                         <p key={index}>&bull; {email.data} ({email.type})</p>
-                        ))
-                        ) : (
-                            <p>No emails available</p>
-                            )}
+                    ))
+                ) : (
+                    <p>No emails available</p>
+                )}
                 <p><strong>Phone Numbers:</strong></p>
                 {employee.phone_numbers?.length > 0 ? (
                     employee.phone_numbers.map((phone, index) => (
                         <p key={index}>&bull; {phone.data} ({phone.type})</p>
-                        ))
-                        ) : (
-                            <p>No phone numbers available</p>
-                            )}
+                    ))
+                ) : (
+                    <p>No phone numbers available</p>
+                )}
                 <p><strong>Address:</strong></p>
                 {employee.residence ? (
                     <p>
@@ -41,9 +41,9 @@ const Employee = ({ employee, employment }) => {
                     </p>
                 ) : (
                     <p>No address available</p>
-                    )}
+                )}
             </Box>
-
+            <hr />
             {/* Employment Info */}
             <Box className="section">
                 <h6 className="section-title">Employment Info</h6>
@@ -52,7 +52,7 @@ const Employee = ({ employee, employment }) => {
                 <p><strong>End Date:</strong> {employment.end_date || 'YYYY-MM-DD'}</p>
                 <p><strong>Employment Type:</strong> {employment.employment?.type || 'Not available'}</p>
                 <p><strong>Employment Subtype:</strong> {employment.employment?.subtype || 'Not available'}</p>
-
+                <br />
                 <p><strong>Manager Info:</strong></p>
                 {employment.manager ? (
                     <p>Manager ID: {employment.manager.id}</p>
@@ -60,11 +60,11 @@ const Employee = ({ employee, employment }) => {
                     <p>No manager assigned</p>
                 )}
             </Box>
-
+            <hr />
             {/* Income Info */}
             <Box className="section">
                 <h6 className="section-title">Income History</h6>
-                <p><strong>Latest Income:</strong> {employment.income?.amount || 'N/A'} {employment.income?.currency || ''} ({employment.income?.unit || ''})</p>
+                <p><strong>Latest Income:</strong> ${employment.income?.amount || 'N/A'} {employment.income?.currency || ''} ({employment.income?.unit || ''})</p>
                 <p><strong>Income History:</strong></p>
                 {employment.income_history?.length > 0 ? (
                     employment.income_history.map((income, index) => (
@@ -74,7 +74,7 @@ const Employee = ({ employee, employment }) => {
                     <p>No income history available</p>
                 )}
             </Box>
-
+            <hr />
             {/* Custom Fields */}
             <Box className="section">
                 <h6 className="section-title">Custom Fields</h6>
