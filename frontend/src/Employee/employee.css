@@ -1,0 +1,29 @@
+/* Box container styling */
+.employee-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  /* Section margin */
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  /* Typography styles for section titles */
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  /* Divider style for the top job title */
+  .job-title-divider {
+    margin-bottom: 10px;
+  }
+  
+  /* Custom Fields styling */
+  .custom-field {
+    font-weight: bold;
+  }
