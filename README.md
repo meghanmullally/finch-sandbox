@@ -28,7 +28,7 @@ This project is a web application that integrates with Finch's Sandbox API to re
 - **Employee Details:** Click to view more detailed personal and employment information for each employee.
 - **Error Handling:** Custom error messages for failed API calls or restricted endpoints.
 - **Fallback Messages:** Default messages for missing fields such as "No manager assigned" or "No income history available."
-- **Restricted Endpoints Handling:** Clear error messages for unauthorized access to restricted endpoints like `/payment`.
+- **Restricted Endpoints Handling:** Clear error messages for unauthorized access to restricted endpoints like `/payment` and `/pay-statement`.
 
 ---
 
