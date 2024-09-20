@@ -1,0 +1,15 @@
+/* Add margin and padding to the card */
+.company-card {
+    margin-top: 20px;
+    padding: 20px;
+  }
+  
+  /* Add margin to the location section */
+  .company-location {
+    margin-top: 10px;
+  }
+  
+  /* Add margin to the departments section */
+  .company-departments {
+    margin-top: 10px;
+  }
