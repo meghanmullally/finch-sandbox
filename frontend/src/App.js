@@ -151,7 +151,7 @@ function App() {
       });
     } catch (err) {
       // Handle the error and display a custom error message
-      setError("Access denied: This endpoint is restricted.");
+      setError("Access denied: This endpoint is restricted. Please contact the provider for further assistance.");
       console.error("Error accessing restricted endpoint:", err);
     } finally {
       setLoading(false);
