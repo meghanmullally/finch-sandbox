@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# **Finch API Integration Project**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## **Table of Contents**
+- [**Finch API Integration Project**](#finch-api-integration-project)
+  - [**Table of Contents**](#table-of-contents)
+  - [**Project Description**](#project-description)
+  - [**Features**](#features)
+  - [**Technologies Used**](#technologies-used)
+  - [**Installation and Setup**](#installation-and-setup)
+- [API Documentation](#api-documentation)
+- [Handling Errors](#handling-errors)
+- [Future Improvements](#future-improvements)
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## **Project Description**
 
-### `npm start`
+This project is a web application that integrates with Finch's Sandbox API to retrieve company and employee data from various payroll providers. The application allows users to select a payroll provider (Gusto, Paychex Flex, and Workday ), fetch access tokens, retrieve company information, view an employee directory, and access individual employee details. It is designed to provide clear error feedback and fallback messages for missing or incomplete data.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **Features**
 
-### `npm test`
+- **Provider Selection:** Choose from four payroll providers (Gusto, Paychex Flex, and Workday ).
+- **Access Token Retrieval:** Fetch an access token for the selected provider.
+- **Company Info:** View company information such as legal name, phone number, and location.
+- **Employee Directory:** Retrieve a list of employees with department, status, and reporting details.
+- **Employee Details:** Click to view more detailed personal and employment information for each employee.
+- **Error Handling:** Custom error messages for failed API calls or restricted endpoints.
+- **Fallback Messages:** Default messages for missing fields such as "No manager assigned" or "No income history available."
+- **Restricted Endpoints Handling:** Clear error messages for unauthorized access to restricted endpoints like `/payment`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## **Technologies Used**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React** (JavaScript library for building user interfaces)
+- **Axios** (HTTP client for API requests)
+- **Material-UI** (UI library for building responsive layouts)
+- **Express.js** (Node.js framework for building the backend API)
+- **Finch API Sandbox** (API used to retrieve company and employee data)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## **Installation and Setup**
 
-### `npm run eject`
+1. **Clone the Repository**
+```
+git clone https://github.com/meghanmullally/finch-sandbox
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2.	**Navigate to the project directory**
+```
+cd finch-sandbox
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Set up environment variables:**
+You need to create an .env file in the root of the project with the following content:
+```
+CLIENT_ID=your_client_id_here
+CLIENT_SECRET=your_client_secret_here
+FINCH_API_URL=https://sandbox.tryfinch.com
+PORT=3000
+```
+Replace your_client_id_here and your_client_secret_here with the actual values from Finch API.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **Run the Application:**
+Once the dependencies are installed and environment variables are set, run the application using:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+npm run dev
+```
 
-## Learn More
+This command will run both the frontend and backend servers concurrently.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. **Access the Application:**
+Open your browser and go to http://localhost:3000 to access the Finch Sandbox Application.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# API Documentation
 
-### Code Splitting
+For more details on Finch’s API, refer to their official documentation:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [Finch Sandbox API](https://sandbox.tryfinch.com/)
+- [Finch Developer API Reference](https://developer.tryfinch.com/api-reference/organization/company)
 
-### Analyzing the Bundle Size
+# Handling Errors
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **Null fields**: The application handles null or missing fields by displaying fallback messages such as “No manager assigned” or “No income history available.”
+  
+- **Restricted endpoints**: If a restricted endpoint (such as `/payment` or `/pay-statement`) is accessed, the application will display a custom error message:  
+  `"Access denied: This endpoint is restricted. Please contact the provider for further assistance."`
 
-### Making a Progressive Web App
+# Future Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Enhance the user interface**: Improve the data visualization (e.g., filter the employee directory by department) to provide a better user experience.
 
-### Advanced Configuration
+- **Codebase cleanup**: Refactor the codebase to remove duplications and consider introducing state management solutions like Redux.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Error logging and monitoring**: Implement a more comprehensive error logging and monitoring system to better handle and troubleshoot errors in real time.
